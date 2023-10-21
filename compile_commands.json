@@ -1,0 +1,12 @@
+[
+    {
+        "command": "c++ -c -o bin/app -Iinclude -Iinclude src/app.cpp",
+        "directory": "/home/nakulsoneji/Projects/gltest",
+        "file": "/home/nakulsoneji/Projects/gltest/src/app.cpp"
+    },
+    {
+        "command": "c++ -c -o bin/app -Iinclude -Iinclude src/glad.c",
+        "directory": "/home/nakulsoneji/Projects/gltest",
+        "file": "/home/nakulsoneji/Projects/gltest/src/glad.c"
+    }
+]
