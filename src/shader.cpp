@@ -1,4 +1,4 @@
-#include "shader.h"
+#include "shader.hpp"
 
 // constructor
 Shader::Shader(const char* vertexPath, const char* fragmentPath) {
@@ -9,6 +9,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 
   vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
   fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
   try {
     vShaderFile.open(vertexPath);
     fShaderFile.open(fragmentPath);
