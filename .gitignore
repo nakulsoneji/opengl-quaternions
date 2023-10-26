@@ -1,2 +1,7 @@
+# hidden files
 .*
+# build directories
+bin/
+obj/
+# allow gitignore
 !.gitignore
