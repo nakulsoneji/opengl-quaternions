@@ -1,12 +1,54 @@
 [
-    {
-        "command": "c++ -c -o bin/app -Iinclude -Iinclude src/app.cpp",
-        "directory": "/home/nakulsoneji/Projects/gltest",
-        "file": "/home/nakulsoneji/Projects/gltest/src/app.cpp"
-    },
-    {
-        "command": "c++ -c -o bin/app -Iinclude -Iinclude src/glad.c",
-        "directory": "/home/nakulsoneji/Projects/gltest",
-        "file": "/home/nakulsoneji/Projects/gltest/src/glad.c"
-    }
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Iinclude",
+      "-o",
+      "obj/glad.o",
+      "src/glad.c"
+    ],
+    "directory": "/home/nakulsoneji/Projects/gltest",
+    "file": "/home/nakulsoneji/Projects/gltest/src/glad.c",
+    "output": "/home/nakulsoneji/Projects/gltest/obj/glad.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Iinclude",
+      "-o",
+      "obj/stb_image.o",
+      "src/stb_image.c"
+    ],
+    "directory": "/home/nakulsoneji/Projects/gltest",
+    "file": "/home/nakulsoneji/Projects/gltest/src/stb_image.c",
+    "output": "/home/nakulsoneji/Projects/gltest/obj/stb_image.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Iinclude",
+      "-o",
+      "obj/app.o",
+      "src/app.cpp"
+    ],
+    "directory": "/home/nakulsoneji/Projects/gltest",
+    "file": "/home/nakulsoneji/Projects/gltest/src/app.cpp",
+    "output": "/home/nakulsoneji/Projects/gltest/obj/app.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Iinclude",
+      "-o",
+      "obj/shader.o",
+      "src/shader.cpp"
+    ],
+    "directory": "/home/nakulsoneji/Projects/gltest",
+    "file": "/home/nakulsoneji/Projects/gltest/src/shader.cpp",
+    "output": "/home/nakulsoneji/Projects/gltest/obj/shader.o"
+  }
 ]
