@@ -1,3 +1,0 @@
-/home/nakulsoneji/Projects/gltest/build/CMakeFiles/app.dir
-/home/nakulsoneji/Projects/gltest/build/CMakeFiles/edit_cache.dir
-/home/nakulsoneji/Projects/gltest/build/CMakeFiles/rebuild_cache.dir
