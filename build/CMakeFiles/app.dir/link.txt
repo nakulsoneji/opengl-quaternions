@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/app.dir/src/app.cpp.o CMakeFiles/app.dir/src/glad.c.o CMakeFiles/app.dir/src/shader.cpp.o CMakeFiles/app.dir/src/stb_image.c.o -o app  -lGL -lglfw 

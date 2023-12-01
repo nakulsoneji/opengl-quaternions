@@ -1,0 +1,26 @@
+[
+{
+  "directory": "/home/nakulsoneji/Projects/gltest/build",
+  "command": "/usr/bin/c++  -I/home/nakulsoneji/Projects/gltest/include  -o CMakeFiles/app.dir/src/app.cpp.o -c /home/nakulsoneji/Projects/gltest/src/app.cpp",
+  "file": "/home/nakulsoneji/Projects/gltest/src/app.cpp",
+  "output": "CMakeFiles/app.dir/src/app.cpp.o"
+},
+{
+  "directory": "/home/nakulsoneji/Projects/gltest/build",
+  "command": "/usr/bin/cc  -I/home/nakulsoneji/Projects/gltest/include  -o CMakeFiles/app.dir/src/glad.c.o -c /home/nakulsoneji/Projects/gltest/src/glad.c",
+  "file": "/home/nakulsoneji/Projects/gltest/src/glad.c",
+  "output": "CMakeFiles/app.dir/src/glad.c.o"
+},
+{
+  "directory": "/home/nakulsoneji/Projects/gltest/build",
+  "command": "/usr/bin/c++  -I/home/nakulsoneji/Projects/gltest/include  -o CMakeFiles/app.dir/src/shader.cpp.o -c /home/nakulsoneji/Projects/gltest/src/shader.cpp",
+  "file": "/home/nakulsoneji/Projects/gltest/src/shader.cpp",
+  "output": "CMakeFiles/app.dir/src/shader.cpp.o"
+},
+{
+  "directory": "/home/nakulsoneji/Projects/gltest/build",
+  "command": "/usr/bin/cc  -I/home/nakulsoneji/Projects/gltest/include  -o CMakeFiles/app.dir/src/stb_image.c.o -c /home/nakulsoneji/Projects/gltest/src/stb_image.c",
+  "file": "/home/nakulsoneji/Projects/gltest/src/stb_image.c",
+  "output": "CMakeFiles/app.dir/src/stb_image.c.o"
+}
+]
