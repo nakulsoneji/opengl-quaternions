@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.5)
 
 project(
   OpenGlTest
@@ -7,6 +7,9 @@ project(
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+file(CREATE_LINK "${CMAKE_BINARY_DIR}/compile_commands.json"
+  "${CMAKE_SOURCE_DIR}/compile_commands.json" SYMBOLIC)
 
 add_executable(app
   "src/app.cpp"
@@ -20,4 +23,5 @@ target_include_directories(app
 target_link_libraries(app
   PRIVATE "GL"
   PRIVATE "glfw")
+
 
