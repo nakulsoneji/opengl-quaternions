@@ -1,12 +1,11 @@
 # build program
 build: 
-  cmake --build build
+  meson compile -C build
 
 # generate build
 gen-build:
-  mkdir -p build
-  cd build && cmake ..
-  cd ..
+  meson setup build
+  ln -s build/compile_commands.json compile_commands.json
 
 # run program
 run: build
@@ -14,4 +13,4 @@ run: build
 
 # remove build files
 clean:
-  cmake --build build --target clean
+  meson compile -C build --clean
