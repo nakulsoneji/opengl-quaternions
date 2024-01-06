@@ -1,16 +1,19 @@
 # build program
-build: 
-  meson compile -C build
+build:
+  cmake --build build
 
 # generate build
 gen-build:
-  meson setup build
-  ln -s build/compile_commands.json compile_commands.json
+  cmake -S . -B build
 
 # run program
 run: build
   ./build/app
 
-# remove build files
+# remove build files (basically just the binary)
 clean:
-  meson compile -C build --clean
+  cmake --build build --target clean
+
+# cleans and builds all in one (clean + build)!!
+fresh: 
+  cmake --build build --clean-first

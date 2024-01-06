@@ -4,9 +4,6 @@
 #include <glad/glad.h>
 
 #include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 
 class Shader {
 public:
@@ -14,7 +11,7 @@ public:
   unsigned int ID;
 
   // constructor
-  Shader(const char* vertexPath, const char* fragmentPath);
+  Shader(const char *vertexPath, const char *fragmentPath);
 
   // use function
   void use();
@@ -25,4 +22,4 @@ public:
   void setFloat(const std::string &name, float value) const;
 };
 
-#endif 
+#endif
