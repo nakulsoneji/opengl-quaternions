@@ -11,7 +11,7 @@ file(CREATE_LINK
   "${CMAKE_BINARY_DIR}/compile_commands.json"
   "${CMAKE_SOURCE_DIR}/compile_commands.json" SYMBOLIC)
 
-file(GLOB SRC_FILES
+file(GLOB SRC_FILES CONFIGURE_DEPENDS
   "${CMAKE_SOURCE_DIR}/src/*.c"
   "${CMAKE_SOURCE_DIR}/src/*.cpp")
 
