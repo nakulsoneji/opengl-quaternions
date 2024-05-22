@@ -199,24 +199,24 @@ int main() {
   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   while (!glfwWindowShouldClose(window)) {
     processInput(window);
-    if (glfwGetKey(window, GLFW_KEY_W)) {
-      view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.01f));
-    }
-    if (glfwGetKey(window, GLFW_KEY_S)) {
-      view = glm::translate(view, glm::vec3(0.0f, 0.0f, -0.01f));
-    }
-    if (glfwGetKey(window, GLFW_KEY_D)) {
-      view = glm::translate(view, glm::vec3(-0.01f, 0.0f, 0.0f));
-    }
-    if (glfwGetKey(window, GLFW_KEY_A)) {
-      view = glm::translate(view, glm::vec3(0.01f, 0.0f, 0.0f));
-    }
-    if (glfwGetKey(window, GLFW_KEY_RIGHT)) {
-      view = glm::rotate(view, glm::radians(1.0f), glm::vec3(0.0f, 0.1f, 0.0f));
-    }
-    if (glfwGetKey(window, GLFW_KEY_LEFT)) {
-      view = glm::rotate(view, -glm::radians(1.0f), glm::vec3(0.0f, 0.1f, 0.0f));
-    }
+    /* if (glfwGetKey(window, GLFW_KEY_W)) { */
+    /*   view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.01f)); */
+    /* } */
+    /* if (glfwGetKey(window, GLFW_KEY_S)) { */
+    /*   view = glm::translate(view, glm::vec3(0.0f, 0.0f, -0.01f)); */
+    /* } */
+    /* if (glfwGetKey(window, GLFW_KEY_D)) { */
+    /*   view = glm::translate(view, glm::vec3(-0.01f, 0.0f, 0.0f)); */
+    /* } */
+    /* if (glfwGetKey(window, GLFW_KEY_A)) { */
+    /*   view = glm::translate(view, glm::vec3(0.01f, 0.0f, 0.0f)); */
+    /* } */
+    /* if (glfwGetKey(window, GLFW_KEY_RIGHT)) { */
+    /*   view = glm::rotate(view, glm::radians(1.0f), glm::vec3(0.0f, 0.1f, 0.0f)); */
+    /* } */
+    /* if (glfwGetKey(window, GLFW_KEY_LEFT)) { */
+    /*   view = glm::rotate(view, -glm::radians(1.0f), glm::vec3(0.0f, 0.1f, 0.0f)); */
+    /* } */
 
 
     glfwPollEvents();
@@ -236,6 +236,8 @@ int main() {
     ImGui::SameLine();
     ImGui::InputInt("target angle text", &target_angle);
     ImGui::InputFloat3("target axis", (float*) &target_axis);
+    ImGui::Text("Animation duration:");
+    ImGui::InputFloat("seconds", &sim_time);
 
     if (ImGui::Button("Start")) {
       start = true;
