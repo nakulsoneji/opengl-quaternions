@@ -12,6 +12,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -40,6 +43,15 @@ int main() {
     std::cout << "Failed to initialize GLAD" << std::endl;
     return -1;
   }
+
+  // start imgui
+  IMGUI_CHECKVERSION();
+  ImGui::CreateContext();
+  ImGuiIO& io = ImGui::GetIO();
+  io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls 
+  ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+  ImGui_ImplOpenGL3_Init();
+  
 
   // record opengl screen
   std::string cmd_str = "ffmpeg -r 60 -f rawvideo -pix_fmt rgba -s " + std::to_string(WIN_WIDTH) + "x" + std::to_string(WIN_HEIGHT) + " -i - " 
@@ -158,11 +170,13 @@ int main() {
   shaderProgram.setInt("aTexture", 0);
 
   // math
-  glm::quat rot = rot_quat(10.0f, glm::vec3(0.2f, 0.0f, 1.0f));
-  glm::quat target = rot_quat(90.0f, glm::vec3(1.0f, 1.0f, 1.0f));
-  glm::mat4 model = glm::mat4_cast(rot);
+  glm::quat start_quat = glm::quat(1.0f, 0.0f, 0.0, 0.0f);
+  glm::quat target_quat = glm::quat(1.0f, 0.0f, 0.0, 0.0f);
+  glm::mat4 model = glm::mat4_cast(start_quat);
   float time = glfwGetTime();
-  float time_end = 5.0f;
+  float time_end = 0.0f;
+  float time_start = 0.0f;
+  float sim_time = 5.0f;
 
   glm::mat4 view = glm::mat4(1.0f);
   view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
@@ -175,32 +189,91 @@ int main() {
   shaderProgram.setMat4("projection", glm::value_ptr(projection));
   glEnable(GL_DEPTH_TEST);
 
+
+  int start_angle = 0;
+  float start_axis[3] = {0, 0, 0};
+  int target_angle = 0;
+  float target_axis[3] = {0, 0, 0};
+  bool start = false;
+
   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   while (!glfwWindowShouldClose(window)) {
     processInput(window);
+    if (glfwGetKey(window, GLFW_KEY_W)) {
+      view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.01f));
+    }
+    if (glfwGetKey(window, GLFW_KEY_S)) {
+      view = glm::translate(view, glm::vec3(0.0f, 0.0f, -0.01f));
+    }
+    if (glfwGetKey(window, GLFW_KEY_D)) {
+      view = glm::translate(view, glm::vec3(-0.01f, 0.0f, 0.0f));
+    }
+    if (glfwGetKey(window, GLFW_KEY_A)) {
+      view = glm::translate(view, glm::vec3(0.01f, 0.0f, 0.0f));
+    }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT)) {
+      view = glm::rotate(view, glm::radians(1.0f), glm::vec3(0.0f, 0.1f, 0.0f));
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT)) {
+      view = glm::rotate(view, -glm::radians(1.0f), glm::vec3(0.0f, 0.1f, 0.0f));
+    }
+
+
+    glfwPollEvents();
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    // imgui ui
+    ImGui::Text("Choose start quaternion:");
+    ImGui::SliderInt("start angle", &start_angle, 0, 360);
+    ImGui::SameLine();
+    ImGui::InputInt("start angle text", &start_angle);
+    ImGui::InputFloat3("start axis", (float*) &start_axis);
+
+    ImGui::Text("Choose target quaternion:");
+    ImGui::SliderInt("target angle", &target_angle, 0, 360);
+    ImGui::SameLine();
+    ImGui::InputInt("target angle text", &target_angle);
+    ImGui::InputFloat3("target axis", (float*) &target_axis);
+
+    if (ImGui::Button("Start")) {
+      start = true;
+      time_start = glfwGetTime();
+      time_end = time_start + sim_time;
+      start_quat = rot_quat(start_angle, glm::vec3(start_axis[0], start_axis[1], start_axis[2]));
+      target_quat = rot_quat(target_angle, glm::vec3(target_axis[0], target_axis[1], target_axis[2]));
+    }
 
     glClearColor(0.0f, 0.1f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shaderProgram.use();
-    if (time <= time_end) {
-      float percent = time / time_end;
-      glm::quat rot_quat = glm::slerp(rot, target, percent);
-      model = glm::mat4_cast(rot_quat);
+    if (start && time_end >= time) {
+      float percent = 1 - (time_end - time) / sim_time;
+      glm::quat rot_q = glm::slerp(start_quat, target_quat, percent);
+      model = glm::mat4_cast(rot_q);
       shaderProgram.setMat4("model", glm::value_ptr(model));
       time = glfwGetTime();
     }
+    shaderProgram.setMat4("view", glm::value_ptr(view));
+    shaderProgram.setMat4("projection", glm::value_ptr(projection));
 
     //glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
     // glDrawArrays(GL_TRIANGLES, 0, 3);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     glfwSwapBuffers(window);
     glReadPixels(0, 0, WIN_WIDTH, WIN_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, buf_ffmpeg);
     fwrite(buf_ffmpeg, sizeof(int)*WIN_WIDTH*WIN_HEIGHT, 1, ffmpeg);
-    glfwPollEvents();
+
   }
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
   glfwTerminate();
   pclose(ffmpeg);
   return 0;
@@ -217,7 +290,12 @@ void processInput(GLFWwindow *window) {
 }
 
 glm::quat rot_quat(float theta, glm::vec3 axis) {
-  glm::vec3 norm = glm::normalize(axis);
+  glm::vec3 norm;
+  if (axis == glm::vec3(0.0f)) {
+    norm = axis;
+  } else {
+    norm = glm::normalize(axis);
+  }
   float cos_val = cos(glm::radians(theta / 2));
   float sin_val = sin(glm::radians(theta / 2));
   return glm::quat(cos_val, sin_val * norm.x, sin_val * norm.y, sin_val * norm.z);
