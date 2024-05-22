@@ -2,14 +2,23 @@
 #include "stb_image.h"
 
 #include <GLFW/glfw3.h>
+#include <stdio.h>
 #include <glad/glad.h>
+#include <glm/ext/quaternion_common.hpp>
+#include <glm/fwd.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <string>
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
+glm::quat rot_quat(float theta, glm::vec3 axis);
+
+#define WIN_WIDTH 1280
+#define WIN_HEIGHT 720 
 
 int main() {
   glfwInit();
@@ -17,7 +26,7 @@ int main() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  GLFWwindow* window = glfwCreateWindow(800, 600, "glfw_window", NULL, NULL);
+  GLFWwindow* window = glfwCreateWindow(WIN_WIDTH, WIN_HEIGHT, "glfw_window", NULL, NULL);
 
   if (window == NULL) {
     std::cout << "Failed to create GLFW window" << std::endl;
@@ -32,7 +41,17 @@ int main() {
     return -1;
   }
 
-  float rect[] = {
+  // record opengl screen
+  std::string cmd_str = "ffmpeg -r 60 -f rawvideo -pix_fmt rgba -s " + std::to_string(WIN_WIDTH) + "x" + std::to_string(WIN_HEIGHT) + " -i - " 
+                        "-threads 0 -preset fast -y -pix_fmt yuv420p -crf 21 -vf vflip output.mp4";
+  const char* cmd = cmd_str.c_str();
+
+  FILE* ffmpeg = popen(cmd, "w");
+
+  int* buf_ffmpeg = new int[WIN_WIDTH*WIN_HEIGHT];
+
+
+  float rect_old[] = {
   // positions           texture coords
   //|-----------------| |---------|
     -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
@@ -41,8 +60,52 @@ int main() {
     -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,  // top left
   };
 
+  float rect[] = {
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+    0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+    -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+    0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
+    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
+  };
   int ind[] = {
-    0, 1, 2, 3, 0, 2,
+    0, 1, 2, 
+    3, 0, 2,
   };
 
   Shader shaderProgram("shaders/shader.vert", "shaders/shader.frag");
@@ -95,39 +158,51 @@ int main() {
   shaderProgram.setInt("aTexture", 0);
 
   // math
-  glm::mat4 model = glm::mat4(1.0f);
-  model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0, 0.0, 1.0));
-  model = glm::scale(model, glm::vec3(0.5, 0.5, 0.5));
-
+  glm::quat rot = rot_quat(10.0f, glm::vec3(0.2f, 0.0f, 1.0f));
+  glm::quat target = rot_quat(90.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+  glm::mat4 model = glm::mat4_cast(rot);
+  float time = glfwGetTime();
+  float time_end = 5.0f;
 
   glm::mat4 view = glm::mat4(1.0f);
   view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 
   glm::mat4 projection;
-  projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+  projection = glm::perspective(glm::radians(45.0f), static_cast<float>(WIN_WIDTH) / static_cast<float>(WIN_HEIGHT), 0.1f, 100.0f);
 
   shaderProgram.setMat4("model", glm::value_ptr(model));
   shaderProgram.setMat4("view", glm::value_ptr(view));
   shaderProgram.setMat4("projection", glm::value_ptr(projection));
+  glEnable(GL_DEPTH_TEST);
 
   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   while (!glfwWindowShouldClose(window)) {
     processInput(window);
 
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.0f, 0.1f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     shaderProgram.use();
+    if (time <= time_end) {
+      float percent = time / time_end;
+      glm::quat rot_quat = glm::slerp(rot, target, percent);
+      model = glm::mat4_cast(rot_quat);
+      shaderProgram.setMat4("model", glm::value_ptr(model));
+      time = glfwGetTime();
+    }
+
     //glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
     // glDrawArrays(GL_TRIANGLES, 0, 3);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 
     glfwSwapBuffers(window);
+    glReadPixels(0, 0, WIN_WIDTH, WIN_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, buf_ffmpeg);
+    fwrite(buf_ffmpeg, sizeof(int)*WIN_WIDTH*WIN_HEIGHT, 1, ffmpeg);
     glfwPollEvents();
   }
-
   glfwTerminate();
+  pclose(ffmpeg);
   return 0;
 }
 
@@ -139,4 +214,11 @@ void processInput(GLFWwindow *window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
     glfwSetWindowShouldClose(window, true);
   }
+}
+
+glm::quat rot_quat(float theta, glm::vec3 axis) {
+  glm::vec3 norm = glm::normalize(axis);
+  float cos_val = cos(glm::radians(theta / 2));
+  float sin_val = sin(glm::radians(theta / 2));
+  return glm::quat(cos_val, sin_val * norm.x, sin_val * norm.y, sin_val * norm.z);
 }
