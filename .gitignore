@@ -5,5 +5,8 @@
 build/
 compile_commands.json
 
+# local video file
+output.mp4
+
 # allow gitignore
 !.gitignore

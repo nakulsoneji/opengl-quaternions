@@ -25,8 +25,8 @@ glm::quat rot_quat(float theta, glm::vec3 axis);
 
 int main() {
   glfwInit();
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   GLFWwindow* window = glfwCreateWindow(WIN_WIDTH, WIN_HEIGHT, "glfw_window", NULL, NULL);
@@ -50,12 +50,12 @@ int main() {
   ImGuiIO& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls 
   ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
-  ImGui_ImplOpenGL3_Init();
+  ImGui_ImplOpenGL3_Init((const char*)"#version 450");
   
 
   // record opengl screen
   std::string cmd_str = "ffmpeg -r 60 -f rawvideo -pix_fmt rgba -s " + std::to_string(WIN_WIDTH) + "x" + std::to_string(WIN_HEIGHT) + " -i - " 
-                        "-threads 0 -preset fast -y -pix_fmt yuv420p -crf 21 -vf vflip output.mp4";
+                        "-threads 0 -preset fast -y -pix_fmt yuv420p -crf 21 -vf vflip output.mp4 -loglevel quiet";
   const char* cmd = cmd_str.c_str();
 
   FILE* ffmpeg = popen(cmd, "w");
