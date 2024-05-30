@@ -18,7 +18,6 @@
         ffmpeg
         imgui
         libGL
-        pkg-config
       ];
       shellHook = ''
         export LD_LIBRARY_PATH="/run/opengl-driver-32/lib:/run/opengl-driver/lib/:${pkgs.wayland}/lib:$LD_LIBRARY_PATH"
