@@ -19,10 +19,9 @@
         imgui
         libGL
       ];
+      DIRENV_LOG_FORMAT="";
       shellHook = ''
         export LD_LIBRARY_PATH="/run/opengl-driver-32/lib:/run/opengl-driver/lib/:${pkgs.wayland}/lib:$LD_LIBRARY_PATH"
-        export IMGUI_DIR="${pkgs.imgui}/include/imgui"
-        exec zsh
       '';
     };
   };
