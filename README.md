@@ -1,6 +1,6 @@
 # Quaternion Rotation With OpenGL
 
-https://github.com/user-attachments/assets/defac80b-3bf6-48cf-8840-f6c7eb27dddf
+https://github.com/user-attachments/assets/4609bc08-c9ff-4893-8976-8e74adab7d43
 
 ## Features
 - OpenGL to create graphical elements
